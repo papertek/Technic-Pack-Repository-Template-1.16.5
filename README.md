@@ -10,9 +10,10 @@ This is my template for hosting modpacks for the [Technic Minecraft Launcher](ht
 * Put any file or folder which should also be in the compressed modpack into `overrides` (All files will be located in the pack's root)
 * Enable travis on your repository
 * Setup your GitHub Token as environment variable `GH_DEPLOY_KEY` on travis.
+* Edit the `GH_REF` env variable in the `.travis.yml` and set your repro reference.
 
 ## Create a modpack zip
 
 * Create a Tag with a version number and let the magic happen.
-* Use the releases and their download link and enter them in the form on the modpack settings page on Technic.
+* Now use the download link from the `modpack.zip` in the dist branch and put it into the modpack settings.
 

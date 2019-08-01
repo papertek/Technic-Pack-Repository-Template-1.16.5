@@ -2,24 +2,22 @@ language: minimal
 git:
   depth: 1
 
-branches:
-  only:
-  - master
+env:
+  global:
+    - GH_REF=github.com/Poeschl/Technic-Pack-Repository-Template.git
+
+if: tag IS present
 
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y zip wget
 
 install:
-  - chmod +x buildPack.sh
+  - chmod +x .scripts/buildPack.sh
+  - chmod +x .scripts/deploy.sh
 
 script:
-  - ./buildPack.sh
+  - .scripts/buildPack.sh
 
-deploy:
-    provider: releases
-    api_key: "$GH_DEPLOY_KEY"
-    file: build/modpack.zip
-    skip_cleanup: true
-    on:
-      tags: true
+after_success:
+  - .scripts/deploy.sh
