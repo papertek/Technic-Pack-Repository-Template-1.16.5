@@ -1,0 +1,25 @@
+language: minimal
+git:
+  depth: 1
+
+branches:
+  only:
+  - master
+
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install -y zip wget
+
+install:
+  - chmod +x buildPack.sh
+
+script:
+  - ./buildPack.sh
+
+deploy:
+    provider: releases
+    api_key: "$GH_DEPLOY_KEY"
+    file: build/modpack.zip
+    skip_cleanup: true
+    on:
+      tags: true
