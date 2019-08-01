@@ -36,7 +36,6 @@ popd > /dev/null
 
 echo 'Copy overrides folder in modpack...'
 cp -r "$workspace_path/overrides/." .
-rm '.empty'
 
 echo 'Create zip...'
 zip -r "$modpack_output_zip" .
