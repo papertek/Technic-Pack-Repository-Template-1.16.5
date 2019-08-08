@@ -1,10 +1,11 @@
 #!/bin/bash
 set -e
 
-mod_input_file=mods.txt
+modpack_config=modpack.json
 modpack_output_zip=modpack.zip
 build_folder=build
 workspace_path=$(pwd)
+download_forge_pattern='https://files.minecraftforge.net/maven/net/minecraftforge/forge/%version%/forge-%version%-universal.jar'
 
 mods_list=()
 
@@ -23,26 +24,39 @@ function modpack_structure {
 
 function download_file {
     download_url="$1"
-    wget --content-disposition -q $download_url 
+    if [ "$2" ]; then
+        progress_flag='--show-progress'
+    fi
+
+    wget --content-disposition -q $progress_flag $download_url || (echo "Failed to download $download_url" && exit 1)
 }
 
 function install_forge {
-    echo 'Copy forge into modpack...'
-    cp "${workspace_path}/bin/$(ls "${workspace_path}/bin/" | head -n 1)" 'bin/modpack.jar'
+
+    pushd "bin" > /dev/null
+    forge_version=$(jq -r '.forgeVersion' "${workspace_path}/${modpack_config}")
+    
+    echo "Download forge version $forge_version"
+    download_file ${download_forge_pattern//%version%/${forge_version}} true
+    mv ./*.jar 'modpack.jar'
+
+    popd > /dev/null
 }
 
 function read_mods {
-    echo 'Detect mods...'
-    while read -r download_line; do
-        if [[ "$download_line" == "https://www.curseforge.com/minecraft/"* ]] && [[ "$download_line" != *"/file" ]]; then 
-            download_line+='/file'
-            echo "Add mod(curseforge): $download_line"
-        else
-            echo "Add mod: $download_line"
-        fi;
+    echo 'Collect mods...'
 
-        mods_list+=("$download_line")        
-    done < "${workspace_path}/${mod_input_file}"
+    mod_urls=$(jq -r '.mods[].url' "${workspace_path}/${modpack_config}")
+
+    for mod in ${mod_urls[@]}; do
+        if [[ "$mod" == "https://www.curseforge.com/minecraft/"* ]]; then 
+            [[ "$mod" == *"/file" ]] || mod+='/file'
+            echo "Add mod(curseforge): $mod"
+        else
+            echo "Add mod: $mod"
+        fi;
+        mods_list+=("$mod")
+    done
 }
 
 function install_mods {
@@ -72,6 +86,6 @@ install_mods
 copy_overrides
 
 echo 'Create zip...'
-zip -r "$modpack_output_zip" .
+zip -9 -r "$modpack_output_zip" .
 
 echo "Created $modpack_output_zip"
