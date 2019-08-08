@@ -14,6 +14,6 @@ This is my template for hosting modpacks for the [Technic Minecraft Launcher](ht
 
 ## Create a modpack zip
 
-* Create a Tag with a version number and let the magic happen.
+* If the points above are done correctly every push or edit of the master branch will create the modpack on the `dist` branch.
 * Now use the download link from the `modpack.zip` in the dist branch and put it into the modpack settings.
 

@@ -6,7 +6,9 @@ env:
   global:
     - GH_REF=github.com/Poeschl/Technic-Pack-Repository-Template.git
 
-if: tag IS present
+branches:
+  only:
+    - master
 
 before_install:
   - sudo apt-get update
