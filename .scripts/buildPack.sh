@@ -23,7 +23,7 @@ function modpack_structure {
 
 function download_file {
     download_url="$1"
-    wget --content-disposition -q --show-progress $download_url 
+    wget --content-disposition -q $download_url 
 }
 
 function install_forge {
@@ -46,16 +46,17 @@ function read_mods {
 }
 
 function install_mods {
-    echo 'Downloading mods...'
+    echo 'Downloading mods'
     pushd "mods" > /dev/null
     export -f download_file
-    echo ${mods_list[@]} | xargs -n 1 -P 8 -I {} -d ' ' bash -c 'download_file "{}"'
+    echo ${mods_list[@]} | xargs -n 1 -P 8 -I {} -d ' ' bash -c 'download_file "{}" && printf '.''
+    printf 'Finished\n'
     popd > /dev/null
 }
 
 function copy_overrides {
     echo 'Copy overrides folder in modpack...'
-    cp -r "$workspace_path/overrides/." .
+    cp -r -v "$workspace_path/overrides/." .
 }
 
 ### Main ###
