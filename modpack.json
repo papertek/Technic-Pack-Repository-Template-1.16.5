@@ -2,7 +2,7 @@
     "forgeVersion":"1.12.2-14.23.5.2847",
     "mods":{
         "urls":[
-        	{"url": "https://url.xyz/to/the/mod.jar"}
+        	{"url": "https://github.com/MrCrayfish/MrCrayfishDeviceMod/releases/download/v0.2.0pre6-1.12.2/device-api-0.2.0pre6-1.12.2.jar"}
         ],
         "curse":[
             {   
