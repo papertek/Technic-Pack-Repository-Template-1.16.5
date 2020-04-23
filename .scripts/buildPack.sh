@@ -47,6 +47,7 @@ function install_curse_mods {
         echo "Download mod ${projectId}"
 
         download_url=$(curl -s "https://addons-ecs.forgesvc.net/api/v2/addon/${projectId}/file/${fileId}/download-url" | sed 's/ /%20/g')
+        echo "Download url: ${download_url}"
         download_file "${download_url}" true
 
         index=$(( index + 1 ))
