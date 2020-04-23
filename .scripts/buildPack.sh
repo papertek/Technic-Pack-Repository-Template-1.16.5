@@ -31,7 +31,7 @@ function download_file {
     else
         progress_flag='-s'
     fi
-    curl -O -J -L --compressed $progress_flag $download_url || (echo "Failed to download $download_url" && exit 1)
+    curl -O -J -L --globoff --compressed $progress_flag "$download_url" || (echo "Failed to download $download_url" && exit 1)
 }
 
 function install_curse_mods {
@@ -49,7 +49,7 @@ function install_curse_mods {
         download_url=$(curl -s "https://addons-ecs.forgesvc.net/api/v2/addon/${projectId}/file/${fileId}/download-url" | sed 's/ /%20/g')
         download_file "${download_url}" true
 
-        index=$(( $index + 1 ))
+        index=$(( index + 1 ))
     done
     printf 'Finished downloading curse mods\n'
     popd > /dev/null
