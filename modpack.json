@@ -1,8 +1,25 @@
 {
-    "forgeVersion":"1.12.2-14.23.5.2838",
-    "mods":[
-        {"url":"https://www.curseforge.com/minecraft/mc-mods/hwyla/download/2568751"},
-        {"url":"https://www.curseforge.com/minecraft/mc-mods/inventory-tweaks/download/2482481"},
-        {"url":"https://www.curseforge.com/minecraft/mc-mods/more-overlays/download/2745657"}
-    ]
+    "forgeVersion":"1.12.2-14.23.5.2847",
+    "mods":{
+        "urls":[
+        	{"url": "https://url.xyz/to/the/mod.jar"}
+        ],
+        "curse":[
+            {   
+                "name": "Inventory Tweaks",
+                "projectId":"223094",
+                "fileId": "2482481"
+            },
+            {   
+                "name": "Just Enough Items (JEI)",
+                "projectId":"238222",
+                "fileId": "2847112"
+            },
+            {   
+                "name": "JourneyMap",
+                "projectId":"32274",
+                "fileId": "2916002"
+            }
+        ]    
+    }
 }

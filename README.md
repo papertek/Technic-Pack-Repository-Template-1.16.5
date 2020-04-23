@@ -8,7 +8,9 @@ This is my template for hosting modpacks for the [Technic Minecraft Launcher](ht
 * Remove the `LICENCE.md` and this `README.md` (Additional: Create your own ones)
 * Change the `modpack.json` to match your expectations
     * Set your forge version (it should not contain any spaces in the version!)
-    * Add your mods in the `mods` list with the pattern `{"url":"https://your/mod"}` (make sure the links are pointing directly to the `*.jar`)
+    * Get with the ids from CurseForge __(recommended)__ of your mods. The `projectId` can be found on the mods details and the `fileId` is the last part of the download link. The name is optional.
+    * or add your url into `modpack.json` (make sure the links are pointing directly to the `*.jar`)
+    * If you want to take notes, append to any objekt `"note": "Something something"` with your text.
 * Put any file or folder which should also be in the compressed modpack into `overrides` (All files will be located in the pack's root)
 * Enable travis on your repository
 * Setup your GitHub Token as environment variable `GH_DEPLOY_KEY` on travis.
