@@ -7,7 +7,9 @@ build_folder=build
 workspace_path=$(pwd)
 download_forge_pattern='https://files.minecraftforge.net/maven/net/minecraftforge/forge/%version%/forge-%version%-universal.jar'
 
-mods_list=()
+url_download_list=()
+curse_mod_projectIds=()
+curse_mod_fileIds=()
 
 function modpack_structure {
     if [ -d "$build_folder" ]; then
@@ -25,10 +27,32 @@ function modpack_structure {
 function download_file {
     download_url="$1"
     if [ "$2" ]; then
-        progress_flag='--show-progress'
+        progress_flag='-#'
+    else
+        progress_flag='-s'
     fi
+    curl -O -J -L --compressed $progress_flag $download_url || (echo "Failed to download $download_url" && exit 1)
+}
 
-    wget --content-disposition -q $progress_flag $download_url || (echo "Failed to download $download_url" && exit 1)
+function install_curse_mods {
+
+    echo 'Downloading curse mods'
+    pushd "mods" > /dev/null
+    export -f download_file
+
+    index=0
+    while [ $index -lt ${#curse_mod_projectIds[@]} ]; do
+        projectId=${curse_mod_projectIds[$index]}
+        fileId=${curse_mod_fileIds[$index]}
+        echo "Download mod ${projectId}"
+
+        download_url=$(curl -s "https://addons-ecs.forgesvc.net/api/v2/addon/${projectId}/file/${fileId}/download-url" | sed 's/ /%20/g')
+        download_file "${download_url}" true
+
+        index=$(( $index + 1 ))
+    done
+    printf 'Finished downloading curse mods\n'
+    popd > /dev/null
 }
 
 function install_forge {
@@ -46,25 +70,20 @@ function install_forge {
 function read_mods {
     echo 'Collect mods...'
 
-    mod_urls=$(jq -r '.mods[].url' "${workspace_path}/${modpack_config}")
-
-    for mod in ${mod_urls[@]}; do
-        if [[ "$mod" == "https://www.curseforge.com/minecraft/"* ]]; then 
-            [[ "$mod" == *"/file" ]] || mod+='/file'
-            echo "Add mod(curseforge): $mod"
-        else
-            echo "Add mod: $mod"
-        fi;
-        mods_list+=("$mod")
-    done
+    save_ifs=$IFS
+    IFS=$'\n'
+    url_download_list=($(jq -r '.mods.urls[] // {} | .url' "${workspace_path}/${modpack_config}"))
+    curse_mod_projectIds=($(jq -r '.mods.curse[] // {} | .projectId' "${workspace_path}/${modpack_config}"))
+    curse_mod_fileIds=($(jq -r '.mods.curse[] // {} | .fileId' "${workspace_path}/${modpack_config}"))
+    IFS=$save_ifs
 }
 
 function install_mods {
     echo 'Downloading mods'
     pushd "mods" > /dev/null
     export -f download_file
-    echo ${mods_list[@]} | xargs -n 1 -P 8 -I {} -d ' ' bash -c 'download_file "{}" && printf '.''
-    printf 'Finished\n'
+    echo ${url_download_list[@]} | xargs -n 1 -P 8 -I {} -d ' ' bash -c 'download_file "{}" && printf '.''
+    printf 'Finished url mods\n'
     popd > /dev/null
 }
 
@@ -81,7 +100,13 @@ install_forge
 
 read_mods
 
-install_mods
+if [ ! "$url_download_list" == 'null' ]; then
+    install_mods
+fi
+
+if [ ! "$curse_mod_projectIds" == 'null' ]; then
+    install_curse_mods
+fi
 
 copy_overrides
 
