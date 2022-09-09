@@ -1,7 +1,6 @@
 # Technic Pack Repository Template
 
-__⚠️ Due to long inactivity from my side and no personal need to update this, it is archived and will only stay here for documentational reasons.
-It might also not work anymore with the lasted Technic environment.__
+Getting into this new modding thing -papertek
 
 This is my template for hosting modpacks for the [Technic Minecraft Launcher](https://www.technicpack.net/) on github.
 
